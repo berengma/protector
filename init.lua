@@ -1,7 +1,7 @@
-
+local path = minetest.get_modpath("protector")
 -- 'delprotect' priv removed, use 'protection_bypass' instead
 --minetest.register_privilege("delprotect","Ignore player protection")
-
+dofile(path.."/check.lua")
 
 -- get minetest.conf settings
 protector = {}
@@ -319,7 +319,7 @@ end
 -- make sure protection block doesn't overlap another protector's area
 function protector.check_overlap(itemstack, placer, pointed_thing)
 
-	if pointed_thing.type ~= "node" then
+	if pointed_thing.type ~= "node" or not protector_check_pos(placer) then
 		return itemstack
 	end
 
@@ -393,7 +393,7 @@ minetest.register_node("protector:protect", {
 	end,
 
 	on_rightclick = function(pos, node, clicker, itemstack)
-
+	    
 		local meta = minetest.get_meta(pos)
 
 		if meta
@@ -401,6 +401,7 @@ minetest.register_node("protector:protect", {
 			minetest.show_formspec(clicker:get_player_name(), 
 			"protector:node_" .. minetest.pos_to_string(pos), protector.generate_formspec(meta))
 		end
+	    
 	end,
 
 	on_punch = function(pos, node, puncher)
@@ -609,13 +610,13 @@ minetest.register_node("protector:display_node", {
 })
 
 
-local path = minetest.get_modpath("protector")
 
-dofile(path .. "/doors_chest.lua")
+
+--dofile(path .. "/doors_chest.lua")
 dofile(path .. "/pvp.lua")
 dofile(path .. "/admin.lua")
 dofile(path .. "/tool.lua")
-dofile(path .. "/lucky_block.lua")
+--dofile(path .. "/lucky_block.lua")
 
 
 -- stop mesecon pistons from pushing protectors
